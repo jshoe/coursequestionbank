@@ -4,6 +4,7 @@ Given /^I am signed in with provider "([^\"]*)"$/ do |provider|
 end
 
 Given /^I am signed in with uid "([^\"]*)" and provider "([^\"]*)"$/ do |uid, provider| 
+	# Instructor = Instructor.create(uid: id, provider: prov)
 	@instructor = Instructor.find_by_uid(uid)
 	visit login_path
 	Instructor.stub(:find_by_provider_and_uid).and_return(@instructor)

@@ -141,6 +141,12 @@ When /^(?:|I )press "([^"]*)"$/ do |button|
   click_button(button)
 end
 
+# When /^(?:|I )click Add Tags$/ do 
+#   post update_multiple_tags_path
+#   end
+ 
+
+
 When /^(?:|I )follow "([^"]*)"$/ do |link|
   click_link(link)
 end
@@ -176,6 +182,10 @@ end
 
 When /^(?:|I )check "([^\"]*)"$/ do |field|
   check(field)
+end
+
+When /^(?:|I )mark all the boxes$/ do
+  all("input[type='checkbox']").each{|box| box.set('true')}
 end
 
 When /^(?:|I )uncheck "([^\"]*)"$/ do |field|

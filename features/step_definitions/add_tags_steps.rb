@@ -5,3 +5,4 @@ end
 Given(/^I remove tag "([^\"]*)" from problem "([^\"]*)"$/) do |tag_id, problem_id|
   visit "remove/" + tag_id + "/from/problem/" + problem_id
 end
+
