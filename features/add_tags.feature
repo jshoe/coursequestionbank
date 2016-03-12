@@ -1,4 +1,4 @@
-Feature: add a tag to existing question
+Feature: User can add tags to existing questions
   As an CourseQuestionBank Administrator
   So that I can quickly find questions appropriate for my class
   I want to add tags to questions
@@ -41,7 +41,7 @@ Feature: add a tag to existing question
     And I press "Add Tags"
     Then I should see "tag 1"
     And I should see "tag 2"
-  
+
   Scenario: don't fill in any tags in collection view
     Given I am signed in with uid "1234" and provider "github"
     And I have uploaded 'micro_quizzes.txt'
