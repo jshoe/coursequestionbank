@@ -4,6 +4,7 @@ class Problem < ActiveRecord::Base
   belongs_to :instructor
   has_and_belongs_to_many :collections
   belongs_to :previous_version, class_name: 'Problem'
+  belongs_to :succeeding_version, class_name: 'Problem'
 
 
   scope :is_public, -> { where(is_public:  true) }
@@ -167,7 +168,31 @@ class Problem < ActiveRecord::Base
       paginate :page => filters['page'], :per_page => filters['per_page']
     end
 
-    problems.results
+    results = problems.results
+    if !bump_problem.nil?
+      results.reject! {|p| p.id == bump_problem.id}
+      results.insert(0, bump_problem)
+    end
+
+    results.each_with_index do |q, index|
+      prev = q.previous_version_id
+      if !q.succeeding_version_id && prev
+        results = self.put_after_this(results, index, prev)
+      end
+    end
+
+    return results
+  end
+
+  def self.put_after_this(results, this_index, target_id)
+    results.reject! {|p| p.id == target_id}
+    target = Problem.find(target_id)
+    results.insert(this_index+1, target)
+    while target.previous_version_id
+      results = self.put_after_this(results, this_index+1, target.previous_version_id)
+    end
+
+    return results
   end
 
   def supersede(user, source)
@@ -175,6 +200,8 @@ class Problem < ActiveRecord::Base
     new_problem.previous_version = self
     new_problem.is_public = self.is_public
     new_problem.save
+    self.succeeding_version = new_problem
+    self.save
     new_problem
   end
 

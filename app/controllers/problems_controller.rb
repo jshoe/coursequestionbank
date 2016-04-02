@@ -34,6 +34,13 @@ class ProblemsController < ApplicationController
       end
     end
 
+    session[:filters][:bloom_category] = []
+    if params[:bloom_category]
+      params[:bloom_category].each do |key, value|
+          session[:filters][:bloom_category] << key if value == "1"
+      end
+    end
+
     session[:filters][:collections] = []
     if params[:collections]
       params[:collections].each do |key, value|
@@ -123,7 +130,7 @@ class ProblemsController < ApplicationController
     flash.keep
     redirect_to :back
   end
-  
+
   def update_multiple_tags
     new_tags = Tag.parse_list params[:tag_names]
     selected = params[:checked_problems] ? params[:checked_problems].keys : []
@@ -140,9 +147,37 @@ class ProblemsController < ApplicationController
     flash.keep
     redirect_to :back
   end
-  
+
   def supersede
     @problem = Problem.find(params[:id])
     @ruql_source = flash[:ruql_source]
   end
+<<<<<<< Updated upstream
+=======
+
+  def bloom_categorize
+    @problem = Problem.find(params[:id])
+    category = params[:category]
+    @problem.bloom_categorize(category)
+    flash[:notice] = "Bloom category set."
+    flash[:bump_problem] = @problem.id
+    redirect_to :back
+  end
+
+  def set_privacy
+    problem = Problem.find(params[:id])
+    privacy = params[:privacy].downcase.strip
+    if privacy == 'public'
+      problem.is_public = true
+    elsif privacy == 'private'
+      problem.is_public = false
+    else
+      return
+    end
+    problem.save
+    flash[:notice] = "Problem changed to #{privacy}"
+    flash[:bump_problem] = problem.id
+    redirect_to :back
+  end
+>>>>>>> Stashed changes
 end
