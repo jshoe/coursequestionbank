@@ -35,12 +35,12 @@ class RuqlRenderer
 
   def self.ruql_question_header(json_hash)
     line = case json_hash["question_type"]
-      when "SelectMultiple" then "select_multiple"
-      when "MultipleChoice" then "choice_answer"
-      when "FillIn" then "fill_in"
+      when "SelectMultiple" then "select_multiple" + ':question_uuid => ' + json_hash['question_uuid']
+      when "MultipleChoice" then "choice_answer" + ':question_uuid => ' + json_hash['question_uuid']
+      when "FillIn" then "fill_in" + ':question_uuid => ' + json_hash['question_uuid']
       else ""
     end
-    options = ['randomize', 'raw', 'question_uuid'].select{|x| json_hash[x]}.map{|x| ":#{x} => true"}.join(', ')
+    options = ['randomize', 'raw'].select{|x| json_hash[x]}.map{|x| ":#{x} => true"}.join(', ')
     line += ' ' + options if options != ''
     return line + " do"
   end
